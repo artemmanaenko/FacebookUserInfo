@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <color name="app_primary_color">#1d0079</color>
+    
+    <color name="bg_chapter">#ddd</color>
+
+    <color name="profile_name">#222</color>
+    <color name="profile_section_title">#aaa</color>
+    <color name="profile_gender">#222</color>
+
+    <color name="friends_list_title_text_color">#222</color>
+</resources>

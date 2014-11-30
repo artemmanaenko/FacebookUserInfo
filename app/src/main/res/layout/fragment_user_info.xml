@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/profile_info_root_padding"
+        android:background="@color/bg_chapter">
+
+        <include layout="@layout/section_profile_header"/>
+
+        <include layout="@layout/section_friends_list"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/info_loading_failed"
+        style="@style/EmptyView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/info_loading_failed"
+        android:visibility="gone"/>
+</FrameLayout>

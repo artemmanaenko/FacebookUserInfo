@@ -1,0 +1,20 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <fragment
+        android:id="@+id/user_info_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="com.manayenko.provectusfb.ui.fragment.UserInfoFragment"/>
+
+    <ProgressBar
+        style="?android:attr/android:progressBarStyleLarge"
+        android:id="@+id/progress"
+        android:layout_width="@dimen/progress_size"
+        android:layout_height="@dimen/progress_size"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/section_padding"/>
+
+</RelativeLayout>

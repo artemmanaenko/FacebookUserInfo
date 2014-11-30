@@ -1,0 +1,20 @@
+<resources>
+
+    <dimen name="section_padding">5dp</dimen>
+    
+    <dimen name="progress_size">40dp</dimen>
+
+    <dimen name="profile_info_root_padding">5dp</dimen>
+
+    <dimen name="profile_name_text_size">16sp</dimen>
+    <dimen name="profile_section_text_size">14sp</dimen>
+    <dimen name="profile_section_title_margin_side">3dp</dimen>
+    <dimen name="profile_section_margin_top">2dp</dimen>
+
+    <dimen name="friends_list_padding">5dp</dimen>
+    <dimen name="friends_list_title_text_size">16sp</dimen>
+    <dimen name="friends_list_title_padding">5dp</dimen>
+    <dimen name="friends_list_photo_size">40dp</dimen>
+
+    <dimen name="item_friend_padding">5dp</dimen>
+</resources>

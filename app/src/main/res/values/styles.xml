@@ -1,0 +1,45 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/app_primary_color</item>
+    </style>
+
+    <style name="AuthTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
+
+    <style name="ProfileName">
+        <item name="android:textColor">@color/profile_name</item>
+        <item name="android:textSize">@dimen/profile_name_text_size</item>
+    </style>
+
+    <style name="ProfileSectionTitle">
+        <item name="android:textColor">@color/profile_section_title</item>
+        <item name="android:textSize">@dimen/profile_section_text_size</item>
+        <item name="android:layout_marginRight">@dimen/profile_section_title_margin_side</item>
+    </style>
+
+    <style name="ProfileSectionValue">
+        <item name="android:textColor">@color/profile_name</item>
+        <item name="android:autoLink">web</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColorLink">#3639ff</item>
+    </style>
+
+    <style name="FriendsListTitle">
+        <item name="android:textColor">@color/friends_list_title_text_color</item>
+        <item name="android:textSize">@dimen/friends_list_title_text_size</item>
+        <item name="android:padding">@dimen/friends_list_title_padding</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="EmptyView" parent="FriendsListTitle">
+        <item name="android:textColor">@color/profile_section_title</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="FriendsList">
+        <item name="android:layout_margin">@dimen/friends_list_padding</item>
+    </style>
+
+</resources>

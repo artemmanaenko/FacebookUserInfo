@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ProvectusFB</string>
+    <string name="facebook_app_id">691622397603647</string>
+    
+    <string name="auth_developer"><b>Developer</b>: Artem Manaenko</string>
+
+    <string name="title_activity_info">Facebook info</string>
+
+    <string name="menu_logout">Logout</string>
+
+    <string name="info_loading_failed">Info loading failed</string>
+
+    <string name="profile_info_upload_photo">Upload a photo</string>
+    <string name="profile_info_gender">Gender:</string>
+    <string name="profile_info_email">Email:</string>
+    <string name="profile_info_open_profile">Open profile:</string>
+
+    <string name="upload_photo_camera">Camera</string>
+    <string name="upload_photo_gallery">Gallery</string>
+    <string name="upload_photo_select_photo">Select photo</string>
+    <string name="upload_photo_success_message">Your photo is successfully uploaded</string>
+
+    <string name="friends_list_title">Your friends (%d)</string>
+    <string name="friends_list_empty">Friends list is empty</string>
+    <string name="friends_list_get_error">You are using wrong test account. Ask the developer, please.</string>
+
+</resources>
