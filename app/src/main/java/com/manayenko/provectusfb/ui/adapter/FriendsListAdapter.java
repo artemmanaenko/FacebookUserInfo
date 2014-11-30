@@ -1,4 +1,4 @@
-package com.manayenko.provectusfb.ui;
+package com.manayenko.provectusfb.ui.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -43,17 +43,22 @@ public class FriendsListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder viewHolder;
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.list_item_friend, parent, false);
+            viewHolder = new ViewHolder();
+            viewHolder.photo = (ImageView) convertView.findViewById(R.id.friend_photo);
+            viewHolder.name = (TextView) convertView.findViewById(R.id.friend_name);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
         Friend user = getItem(position);
 
-        ImageView photo = (ImageView) convertView.findViewById(R.id.friend_photo);
-        Picasso.with(context).load(user.getPhotoUrl()).into(photo);
+        Picasso.with(context).load(user.getPhotoUrl()).into(viewHolder.photo);
 
-        TextView name = (TextView) convertView.findViewById(R.id.friend_name);
-        name.setText(user.getName());
+        viewHolder.name.setText(user.getName());
 
         return convertView;
     }
@@ -61,5 +66,10 @@ public class FriendsListAdapter extends BaseAdapter {
     public void setFriendsList(List<Friend> friendsList) {
         this.friendsList = friendsList;
         notifyDataSetChanged();
+    }
+
+    private class ViewHolder {
+        ImageView photo;
+        TextView name;
     }
 }

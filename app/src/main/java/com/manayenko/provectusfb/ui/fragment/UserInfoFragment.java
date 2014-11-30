@@ -20,7 +20,7 @@ import com.manayenko.provectusfb.events.EventCurrentInfoReceived;
 import com.manayenko.provectusfb.events.EventFriendsListReceived;
 import com.manayenko.provectusfb.manager.FacebookManager;
 import com.manayenko.provectusfb.model.Friend;
-import com.manayenko.provectusfb.ui.FriendsListAdapter;
+import com.manayenko.provectusfb.ui.adapter.FriendsListAdapter;
 import com.manayenko.provectusfb.ui.activity.InfoActivity;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
