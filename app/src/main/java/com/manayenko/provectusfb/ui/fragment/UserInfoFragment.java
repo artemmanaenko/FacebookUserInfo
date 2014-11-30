@@ -35,6 +35,9 @@ import de.greenrobot.event.EventBus;
  */
 public class UserInfoFragment extends Fragment {
 
+    private final int ANIMATION_DURATION = 500;
+    private final float ANIMATION_ALPHA_TO = 1f;
+
     private FacebookManager facebookManager;
 
     private View friendsListRoot;
@@ -109,8 +112,8 @@ public class UserInfoFragment extends Fragment {
     private void showViewWithAnimation(View view) {
         ViewPropertyAnimator
                 .animate(view)
-                .alpha(1f)
-                .setDuration(500)
+                .alpha(ANIMATION_ALPHA_TO)
+                .setDuration(ANIMATION_DURATION)
                 .start();
     }
 
@@ -127,7 +130,7 @@ public class UserInfoFragment extends Fragment {
     }
 
 
-    private void showToastMessage(final String message) {
+    private void showToastMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 

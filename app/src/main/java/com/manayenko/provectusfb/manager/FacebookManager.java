@@ -1,6 +1,5 @@
 package com.manayenko.provectusfb.manager;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import com.facebook.HttpMethod;
@@ -11,6 +10,7 @@ import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
 import com.manayenko.provectusfb.events.EventCurrentInfoReceived;
 import com.manayenko.provectusfb.events.EventFriendsListReceived;
+import com.manayenko.provectusfb.model.Friend;
 import com.manayenko.provectusfb.model.FriendsResponseData;
 
 import java.util.ArrayList;
@@ -33,10 +33,13 @@ public class FacebookManager {
 
     private final String USER_PROFILE_FIELDS = "id, name, gender, email, link";
 
-    private Context context;
+    private final int CACHE_LIFETIME = 20 * 1000;//20 seconds, can be changed
 
-    public FacebookManager(Context context) {
-        this.context = context;
+    private List<Friend> friendsCache;
+    private long lastCacheRefreshTime;
+
+    public FacebookManager() {
+        friendsCache = new ArrayList<Friend>();
     }
 
     public List<String> getPermissionsList() {
@@ -48,6 +51,12 @@ public class FacebookManager {
             return false;
         }
         return true;
+    }
+
+    private boolean isCacheActual() {
+        long currentTime = System.currentTimeMillis();
+        long timeDiff = currentTime - lastCacheRefreshTime;
+        return timeDiff < CACHE_LIFETIME;
     }
 
     public void requestCurrentUserInfo() {
@@ -68,7 +77,24 @@ public class FacebookManager {
         request.executeAsync();
     }
 
+    private void sendCachedFriends() {
+        List<Friend> friendsList = new ArrayList<Friend>(friendsCache);//new list is required to avoid concurrent modification
+        EventFriendsListReceived event = new EventFriendsListReceived(friendsList);
+        EventBus.getDefault().post(event);
+    }
+
+    private void refreshFriendsCache(List<Friend> newFriendsList) {
+        friendsCache.clear();
+        friendsCache.addAll(newFriendsList);
+        lastCacheRefreshTime = System.currentTimeMillis();
+    }
+
     public void requestFriendsList() {
+        if (!friendsCache.isEmpty() && isCacheActual()) {
+            sendCachedFriends();
+            return;
+        }
+
         Session session = Session.getActiveSession();
         Request request = new Request(session, "/me/taggable_friends", null, HttpMethod.GET,
                 new Request.Callback() {
@@ -79,6 +105,7 @@ public class FacebookManager {
                             String rawResponse = response.getRawResponse();
                             FriendsResponseData data = gson.fromJson(rawResponse, FriendsResponseData.class);
                             event = new EventFriendsListReceived(data.getData());
+                            refreshFriendsCache(data.getData());
                         } else {
                             event = new EventFriendsListReceived(response.getError().getErrorUserMessage());
                         }
