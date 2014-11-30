@@ -32,6 +32,7 @@ public class FacebookManager {
     };
 
     private final String USER_PROFILE_FIELDS = "id, name, gender, email, link";
+    private final String ME_FRIENDS_REQUEST = "/me/taggable_friends";
 
     private final int CACHE_LIFETIME = 20 * 1000;//20 seconds, can be changed
 
@@ -96,24 +97,31 @@ public class FacebookManager {
         }
 
         Session session = Session.getActiveSession();
-        Request request = new Request(session, "/me/taggable_friends", null, HttpMethod.GET,
+        Request request = new Request(session, ME_FRIENDS_REQUEST, null, HttpMethod.GET,
                 new Request.Callback() {
                     public void onCompleted(Response response) {
-                        EventFriendsListReceived event;
+                        EventFriendsListReceived event = null;
                         if (response.getError() == null) {
                             Gson gson = new Gson();
                             String rawResponse = response.getRawResponse();
                             FriendsResponseData data = gson.fromJson(rawResponse, FriendsResponseData.class);
-                            event = new EventFriendsListReceived(data.getData());
-                            refreshFriendsCache(data.getData());
+                            if (data != null) {
+                                event = new EventFriendsListReceived(data.getData());
+                                refreshFriendsCache(data.getData());
+                            }
                         } else {
                             event = new EventFriendsListReceived(response.getError().getErrorUserMessage());
                         }
-                        EventBus.getDefault().post(event);
+                        if (event != null)
+                            EventBus.getDefault().post(event);
                     }
                 }
         );
         request.executeAsync();
+    }
+
+    public void clearCache() {
+        friendsCache.clear();
     }
 
 }
