@@ -29,7 +29,7 @@ public class AuthActivity extends ActionBarActivity {
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setApplicationId(getString(R.string.facebook_app_id));
-        loginButton.setPublishPermissions(facebookManager.getPermissionsList());
+        loginButton.setReadPermissions(facebookManager.getPermissionsList());
 
         if (facebookManager.isFbSessionValid())
             showInfoActivity();
