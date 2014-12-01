@@ -12,16 +12,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.model.GraphUser;
 import com.facebook.widget.ProfilePictureView;
 import com.manayenko.provectusfb.FBInfoApplication;
 import com.manayenko.provectusfb.R;
 import com.manayenko.provectusfb.events.EventCurrentInfoReceived;
 import com.manayenko.provectusfb.events.EventFriendsListReceived;
 import com.manayenko.provectusfb.manager.FacebookManager;
+import com.manayenko.provectusfb.model.FacebookUserInfo;
 import com.manayenko.provectusfb.model.Friend;
-import com.manayenko.provectusfb.ui.adapter.FriendsListAdapter;
 import com.manayenko.provectusfb.ui.activity.InfoActivity;
+import com.manayenko.provectusfb.ui.adapter.FriendsListAdapter;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
@@ -42,8 +42,6 @@ public class UserInfoFragment extends Fragment {
 
     private View friendsListRoot;
     private View headerRoot;
-
-    private GraphUser currentUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,14 +67,18 @@ public class UserInfoFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         FBInfoApplication application = (FBInfoApplication) getActivity().getApplication();
         facebookManager = application.getFacebookManager();
+
+        if (facebookManager.hasStoredUserInfo()) {
+            refreshUserInfo();
+        } else
+            facebookManager.requestCurrentUserInfo();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        if (currentUser == null)
-            facebookManager.requestCurrentUserInfo();
+        refreshFriendsList();
     }
 
     @Override
@@ -85,11 +87,21 @@ public class UserInfoFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
+    private void refreshUserInfo() {
+        FacebookUserInfo userInfo = facebookManager.getStoredUserInfo();
+        if (userInfo != null) {
+            fillUserInfo(userInfo);
+        } else
+            setLoadingFailedState();
+    }
+
+    private void refreshFriendsList() {
+        facebookManager.requestFriendsList();
+    }
+
     public void onEvent(EventCurrentInfoReceived eventCurrentInfoReceived) {
         if (eventCurrentInfoReceived.isSuccess()) {
-            currentUser = eventCurrentInfoReceived.getUserInfo();
-            fillUserInfo(currentUser);
-            facebookManager.requestFriendsList();
+            refreshUserInfo();
         } else {
             setLoadingFailedState();
             showToastMessage(eventCurrentInfoReceived.getFailMessage());
@@ -99,11 +111,8 @@ public class UserInfoFragment extends Fragment {
     public void onEvent(EventFriendsListReceived eventFriendsListReceived) {
         if (eventFriendsListReceived.isSuccess()) {
             initFriendsList(eventFriendsListReceived.getFriendsList());
-            showViewWithAnimation(friendsListRoot);
         } else {
             String failMessage = eventFriendsListReceived.getFailMessage();
-            if (failMessage == null)
-                failMessage = getString(R.string.friends_list_get_error);
             showToastMessage(failMessage);
         }
         setProgressVisible(false);
@@ -121,12 +130,17 @@ public class UserInfoFragment extends Fragment {
         ListView listView = (ListView) getView().findViewById(R.id.friends_list);
         listView.setEmptyView(getView().findViewById(android.R.id.empty));
 
+        boolean needToAnimateList = listView.getAdapter() == null;
+
         FriendsListAdapter adapter = new FriendsListAdapter(getActivity().getApplicationContext());
         listView.setAdapter(adapter);
         adapter.setFriendsList(friends);
 
         TextView friendsCount = (TextView) getView().findViewById(R.id.friends_count);
         friendsCount.setText(String.format(getString(R.string.friends_list_title), friends.size()));
+
+        if(needToAnimateList)
+            showViewWithAnimation(friendsListRoot);
     }
 
 
@@ -134,22 +148,27 @@ public class UserInfoFragment extends Fragment {
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
-    private void fillUserInfo(final GraphUser userInfo) {
-        ProfilePictureView profilePhoto = (ProfilePictureView) getView().findViewById(R.id.profile_photo);
-        profilePhoto.setProfileId(userInfo.getId());
+    private void fillUserInfo(FacebookUserInfo userInfo) {
+        if (userInfo != null && userInfo.getProperties() != null) {
+            Map<String, String> infoMap = userInfo.getProperties();
 
-        TextView userName = (TextView) getView().findViewById(R.id.user_name);
-        userName.setText(userInfo.getName());
+            ProfilePictureView profilePhoto = (ProfilePictureView) getView().findViewById(R.id.profile_photo);
+            profilePhoto.setProfileId(infoMap.get("id"));
 
-        ViewGroup infoDetailsRoot = (ViewGroup) getView().findViewById(R.id.info_details_root);
-        infoDetailsRoot.removeAllViews();
+            TextView userName = (TextView) getView().findViewById(R.id.user_name);
+            userName.setText(infoMap.get("name"));
 
-        Map<String, Object> infoMap = userInfo.asMap();
-        addNewProperty(infoDetailsRoot, getString(R.string.profile_info_email), (String) infoMap.get("email"));
-        addNewProperty(infoDetailsRoot, getString(R.string.profile_info_gender), (String) infoMap.get("gender"));
-        addNewProperty(infoDetailsRoot, getString(R.string.profile_info_open_profile), userInfo.getLink());
+            ViewGroup infoDetailsRoot = (ViewGroup) getView().findViewById(R.id.info_details_root);
+            boolean needToAnimateHeader = infoDetailsRoot.getChildCount() == 0;
+            infoDetailsRoot.removeAllViews();
 
-        showViewWithAnimation(headerRoot);
+            addNewProperty(infoDetailsRoot, getString(R.string.profile_info_email), infoMap.get("email"));
+            addNewProperty(infoDetailsRoot, getString(R.string.profile_info_gender), infoMap.get("gender"));
+            addNewProperty(infoDetailsRoot, getString(R.string.profile_info_open_profile), infoMap.get("link"));
+
+            if(needToAnimateHeader)
+                showViewWithAnimation(headerRoot);
+        }
     }
 
     private void addNewProperty(ViewGroup root, String title, String value) {
@@ -173,6 +192,5 @@ public class UserInfoFragment extends Fragment {
     private void setProgressVisible(boolean visible) {
         ((InfoActivity) getActivity()).setProgressVisible(visible);
     }
-
 
 }

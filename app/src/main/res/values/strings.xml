@@ -10,7 +10,7 @@
 
     <string name="menu_logout">Logout</string>
 
-    <string name="info_loading_failed">Info loading failed</string>
+    <string name="info_loading_failed">Info loading failed. Please, re-login.</string>
 
     <string name="profile_info_upload_photo">Upload a photo</string>
     <string name="profile_info_gender">Gender:</string>

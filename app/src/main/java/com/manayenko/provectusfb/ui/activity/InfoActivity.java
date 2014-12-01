@@ -84,7 +84,7 @@ public class InfoActivity extends ActionBarActivity {
 
     private void logout() {
         Session.getActiveSession().closeAndClearTokenInformation();
-        facebookManager.clearCache();
+        facebookManager.logout();
         showAuthActivity();
     }
 

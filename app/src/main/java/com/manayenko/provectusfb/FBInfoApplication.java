@@ -14,7 +14,7 @@ public class FBInfoApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        facebookManager = new FacebookManager();
+        facebookManager = new FacebookManager(this);
     }
 
     public FacebookManager getFacebookManager() {
